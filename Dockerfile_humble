@@ -1,0 +1,100 @@
+# Base image
+FROM osrf/ros:humble-desktop-full
+
+# Set environment variables to avoid some interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update and install base dependencies
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    wget \
+    nano \
+    python3 \
+    python3-pip \
+    git \
+    cmake \
+    curl lsb-release gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN apt-get update && \
+    apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Necessary to compile ros packages from this dockerfile
+RUN apt-get update && \
+    apt-get install -y \
+    ros-humble-ament-cmake \
+    python3-colcon-common-extensions
+
+
+# =======================================================================
+#                  Installation of Clearpath Simulator
+# =======================================================================
+
+# Install Gazebo Fortress
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y ignition-fortress && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Install Clearpath
+RUN apt-get update && \
+    apt-get install -y ros-humble-clearpath-desktop \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Create workspace directory
+WORKDIR /root/clearpath_ws
+# Download dependency file and import repos
+RUN mkdir -p src && \
+    wget https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/humble/dependencies.repos && \
+    vcs import src < dependencies.repos && \
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+WORKDIR /
+
+# Install Clearpath Simulator
+RUN apt-get clean && apt-get update && apt-get install -y ros-humble-clearpath-simulator && \
+    rm -rf /var/lib/apt/lists/*
+
+##### For teleoperation (robot controller), we need additional libraries
+RUN apt-get clean && apt-get update && apt-get install -y ros-humble-teleop-twist-keyboard && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir ~/clearpath/
+
+# Install tmux and terminator
+RUN apt-get update && apt-get install -y  tmux terminator && apt-get clean
+
+
+# =======================================================================
+#                Installation of FAST LIO Dependancies
+# =======================================================================
+
+# Install PCL and Eigen
+RUN apt-get update && \
+    apt install -y libpcl-dev libeigen3-dev
+
+RUN apt-get update && \
+    apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# =======================================================================
+#                     Installation of joy2twist
+# This library enable us to control the vehicle using joystick. Enjoy it
+# =======================================================================
+WORKDIR /root/joystick
+RUN mkdir src && cd src && \
+    git clone https://github.com/HaktanM/joy2twist.git && \
+    cd .. && \
+    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+WORKDIR /
+
+
+

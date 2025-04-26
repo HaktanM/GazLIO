@@ -1,0 +1,155 @@
+
+# Building the Docker Images 
+
+First, build the docker iamge. This will dowload and install necessary libraries and tools to docker image including Gazebo simulator and Fast LIO.
+```bash
+docker build -t humble -f Dockerfile_humble .
+```
+
+# Running The System
+
+The overall system is composed of subsystems
+- Simulator: Gazebo
+- Controller: Joystick
+- State Estimator: Fast LIO
+
+### Terminator
+Each subsytem should be able to communicate with each other. **Terminator** is a useful terminal which enables us to connect each subsytem through ROS.
+
+If you are not familiar with **terminator**, it is highly recommended that you follow a tutorial for basic terminator skills (it would take less than 10 minutes!!!).
+
+### Start the docker image
+First initialize the docker image
+```bash
+cd ..
+bash humble.bash
+```
+
+Start the terminator
+```bash
+terminator
+```
+
+- Press <kbd>Ctrl</kbd> + <kbd>E</kbd>, then <kbd>Ctrl</kbd> + <kbd>O</kbd>. This will open multiple terminals, each capable of interacting with ROS
+
+### Start Simulator
+To launch the simulator, copy and paste the following script into one of the terminals:
+```bash
+ros2 launch clearpath_gz simulation.launch.py world:=warehouse
+```
+**Note:** Replace my_world with one of the following world names:
+- warehouse
+- office
+- pipeline
+- orchard
+
+### Start Joystick Control
+Joystick control enable us to drive the vehicle from a joystick. In another terminal, run the following command to start the joystick driver:
+```bash
+ros2 run joy joy_node
+```
+
+Next, we need to convert the joystick outputs into a format that Gazebo expects. This is done using a dedicated package.
+
+Run the following commands:
+
+```bash
+cd /root/joystick
+source install/setup.bash
+ros2 run joy2twist joy2twist
+```
+
+Once this is done, you can use the joystick to drive the vehicle in the simulator.
+
+
+### Start Fast LIO
+Before starting the FastLIO, wait untill the simulator is ready. Once the simulator is ready, use the following command:
+```bash
+ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
+```
+
+# Data Collection for Offline Examiantion
+You can collect data for offline examination. For example, you may wish to record the following data streams for later analysis:
+- groundtruth pose information
+- IMU data
+- Lidar Data
+- Left and right camera frames
+
+To start recording the data, use the following command:
+```bash
+ros2 bag record /w200_0000/tf /w200_0000/sensors/imu_1/data /w200_0000/sensors/lidar3d_0/points /w200_0000/sensors/camera_0/color/image /w200_0000/sensors/camera_1/color/image -o _warehouse
+```
+This will create a ro2 bag file. 
+
+### Decreasing Simulation Real Time Factor for Efficient Data Collection
+If you plan to collect large amounts of data, it is recommended to decrease the simulation time rate. Without adjusting the time rate, data will continue to accumulate at a fast rate, potentially causing issues with saving or processing the data effectively.
+
+To adjust the simulation time flow, follow these steps:
+1.  Navigate to the world SDF file:
+    ```bash
+    cd /opt/ros/humble/share/clearpath_gz/worlds/
+    nano warehouse.sdf
+    ```
+2. Modify the **real_time_factor**
+    ```xml
+    <sdf version='1.7'>
+    <world name='warehouse'>
+        <physics type="ode">
+        <max_step_size>0.003</max_step_size>
+        <real_time_factor>1.01</real_time_factor>
+    ```
+3. Save and clos. Then, restart the simulator to apply the changes.
+
+
+# Additional Notes
+# Testing FastLIO with Ros2 Bag
+
+## HKU Dataset
+Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/folders/16IUNQagundFwNg3uJFNCSdyLr9VdAxVp?usp=sharing)
+
+1. First initialize the docker image
+    ```bash
+    cd ..
+    bash humble.bash
+    ```
+
+2. Start the terminator
+    ```bash
+    terminator
+    ```
+
+3. In one terminator window, start FastLIO
+    ros2 launch fast_lio mapping.launch.py config_file:=avia.yaml
+    ```
+
+4. Run the ros2 bag from another terminal
+    ```bash
+    cd /PATH/TO/datasets
+    ros2 bag run HKU_MB
+    ```
+
+
+## Clearpath Simulated Data
+Dowload the simulation ros2 bags from [google drive](https://drive.google.com/drive/folders/16IUNQagundFwNg3uJFNCSdyLr9VdAxVp?usp=sharing)
+
+1. First initialize the docker image
+    ```bash
+    cd ..
+    bash humble.bash
+    ```
+
+2. Start the terminator
+    ```bash
+    terminator
+    ```
+
+3. In one terminator window, start FastLIO
+    ```bash
+    ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
+    ```
+
+4. Run the ros2 bag from another terminal
+    ```bash
+    cd /PATH/TO/datasets
+    ros2 bag run warehouse
+    ```
