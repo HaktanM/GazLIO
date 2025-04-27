@@ -43,7 +43,7 @@ This will automatically start the **terminator**.
     sed -i 's|<real_time_factor>[^<]*</real_time_factor>|<real_time_factor>0.2</real_time_factor>|' /opt/ros/humble/share/clearpath_gz/worlds/warehouse.sdf
     ```
 ### Start Simulator
-To launch the simulator, copy and paste the following script into one of the terminals:
+To launch the simulator, copy and paste the following script into one of the terminator terminals:
 ```bash
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 ```
