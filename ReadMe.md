@@ -20,7 +20,7 @@ docker build -t gaz_lio -f Dockerfile_GazLIO .
 
 # Running The System
 
-The overall system is composed of subsystems
+The overall system is composed of 3 subsystems
 - Simulator: Gazebo
 - Controller: Joystick
 - State Estimator: Fast LIO
