@@ -24,11 +24,6 @@ RUN apt-get update && \
     apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Necessary to compile ros packages from this dockerfile
-RUN apt-get update && \
-    apt-get install -y \
-    ros-humble-ament-cmake \
-    python3-colcon-common-extensions
 
 
 # =======================================================================
@@ -42,25 +37,33 @@ RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyri
     apt-get install -y ignition-fortress && \
     rm -rf /var/lib/apt/lists/*
 
-
 # Install Clearpath
 RUN apt-get update && \
     apt-get install -y ros-humble-clearpath-desktop \
     && rm -rf /var/lib/apt/lists/*
 
-
-# Create workspace directory
+# Installing Clearpath Simulator
 WORKDIR /root/clearpath_ws
-# Download dependency file and import repos
 RUN mkdir -p src && \
     wget https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/humble/dependencies.repos && \
     vcs import src < dependencies.repos && \
     /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
 WORKDIR /
 
+
 # Install Clearpath Simulator
 RUN apt-get clean && apt-get update && apt-get install -y ros-humble-clearpath-simulator && \
     rm -rf /var/lib/apt/lists/*
+
+# Also Install Various Worlds
+WORKDIR /opt/ros/humble/share/clearpath_gz/worlds/
+RUN curl -o orchard.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/orchard.sdf && \
+    curl -o office.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/office.sdf && \
+    curl -o pipeline.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/pipeline.sdf && \
+    curl -o construction.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/construction.sdf 
+WORKDIR /
+
+
 
 ##### For teleoperation (robot controller), we need additional libraries
 RUN apt-get clean && apt-get update && apt-get install -y ros-humble-teleop-twist-keyboard && \
@@ -73,28 +76,39 @@ RUN apt-get update && apt-get install -y  tmux terminator && apt-get clean
 
 
 # =======================================================================
-#                Installation of FAST LIO Dependancies
+#                     Installation of joy2twist
+# This library enable us to control the vehicle using joystick. Enjoy it
+# =======================================================================
+WORKDIR /root/joystick/src
+RUN git clone https://github.com/HaktanM/joy2twist.git
+WORKDIR /root/joystick
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+WORKDIR /
+
+##### In case you want to control with keyboard, this is required
+RUN apt-get clean && apt-get update && apt-get install -y ros-humble-teleop-twist-keyboard && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# =======================================================================
+#          Installation of FAST LIO and its Dependancies
 # =======================================================================
 
 # Install PCL and Eigen
 RUN apt-get update && \
     apt install -y libpcl-dev libeigen3-dev
 
+# Upgrade just in case
 RUN apt-get update && \
     apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
-
-# =======================================================================
-#                     Installation of joy2twist
-# This library enable us to control the vehicle using joystick. Enjoy it
-# =======================================================================
-WORKDIR /root/joystick
-RUN mkdir src && cd src && \
-    git clone https://github.com/HaktanM/joy2twist.git && \
-    cd .. && \
-    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+ARG A_DUMMY_VARIABLE=default_value
+# We need a slightly modified version of FastLIO
+WORKDIR /root/fast_lio/src
+RUN git clone  https://github.com/HaktanM/fast_lio.git
+WORKDIR /root/fast_lio/src/fast_lio
+RUN git submodule update --init
+WORKDIR /root/fast_lio
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
 WORKDIR /
-
-
-

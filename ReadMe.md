@@ -12,9 +12,10 @@ You can watch the [full video](https://youtu.be/AwSmk49Mt2I)
 
 # Building the Docker Images 
 
-First, build the docker iamge. This will dowload and install necessary libraries and tools to docker image including Gazebo simulator and Fast LIO.
+First, build the docker image. This will dowload and install necessary libraries and tools to docker image including Gazebo simulator and Fast LIO.
 ```bash
-docker build -t GazLIO -f Dockerfile_GazLIO .
+cd GazLIO
+docker build -t gaz_lio -f Dockerfile_GazLIO .
 ```
 
 # Running The System
@@ -27,8 +28,6 @@ The overall system is composed of subsystems
 ### Terminator
 Each subsytem should be able to communicate with each other. **Terminator** is a useful terminal which enables us to connect each subsytem through ROS.
 
-If you are not familiar with **terminator**, it is highly recommended that you follow a tutorial for basic terminator skills (it would take less than 10 minutes!!!).
-
 ### Start the docker image
 First initialize the docker image
 ```bash
@@ -36,19 +35,19 @@ cd ..
 bash GazLIO_runner.bash
 ```
 
-Start the terminator
-```bash
-terminator
-```
+This will automatically start the **terminator**.
 
-- Press <kbd>Ctrl</kbd> + <kbd>E</kbd>, then <kbd>Ctrl</kbd> + <kbd>O</kbd>. This will open multiple terminals, each capable of interacting with ROS
-
+- Left-click on the Terminator window. Then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> to split the terminal horizontally or vertically. Each split terminal can be used to interact with ROS. Create as many terminal panes as needed.
+- You can change the real time factor of the simulation from `GazLIO_runner.bash`
+    ```
+    sed -i 's|<real_time_factor>[^<]*</real_time_factor>|<real_time_factor>0.</real_time_factor>|' /opt/ros/humble/share/clearpath_gz/worlds/warehouse.sdf
+    ```
 ### Start Simulator
 To launch the simulator, copy and paste the following script into one of the terminals:
 ```bash
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 ```
-**Note:** Replace my_world with one of the following world names:
+**Note:** Currently, the other worlds are not supported. Only the warehouse is available. 
 - warehouse
 - office
 - pipeline
@@ -71,6 +70,13 @@ ros2 run joy2twist joy2twist
 ```
 
 Once this is done, you can use the joystick to drive the vehicle in the simulator.
+
+The button mapping shown below is adapted from the [joy2twist Github page](https://github.com/husarion/joy2twist.git). For more information and detailed documentation, please refer to the original [joy2twist Github page](https://github.com/husarion/joy2twist.git).
+<div align="center">
+  <img src="https://raw.githubusercontent.com/husarion/joy2twist/ros2/.docs/gamepad-legend-panther.png" alt="JoyStick Controller" width="75%">
+</div>
+
+
 
 
 ### Start Fast LIO
@@ -113,9 +119,9 @@ To adjust the simulation time flow, follow these steps:
 
 
 # Additional Notes
-# Testing FastLIO with Ros2 Bag
+## Testing FastLIO with Ros2 Bag
 
-## HKU Dataset
+### HKU Dataset
 Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/folders/16IUNQagundFwNg3uJFNCSdyLr9VdAxVp?usp=sharing)
 
 1. First initialize the docker image
@@ -130,6 +136,7 @@ Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/fold
     ```
 
 3. In one terminator window, start FastLIO
+    ```
     ros2 launch fast_lio mapping.launch.py config_file:=avia.yaml
     ```
 
@@ -140,7 +147,7 @@ Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/fold
     ```
 
 
-## Clearpath Simulated Data
+### Clearpath Simulated Data
 Dowload the simulation ros2 bags from [google drive](https://drive.google.com/drive/folders/16IUNQagundFwNg3uJFNCSdyLr9VdAxVp?usp=sharing)
 
 1. First initialize the docker image
