@@ -1,3 +1,8 @@
+<p style="text-align: center;">
+  <a href="https://youtu.be/AwSmk49Mt2I" target="_blank" style="font-weight: bold; text-decoration: underline; color: black;">YouTube</a>
+</p>
+
+
 # What is This Repository?
 
 This repository provides a [Dockerfile](Dockerfile_GazLIO) that installs [Gazebo](https://gazebosim.org/home) and a slightly modified version of [FastLIO](https://github.com/hku-mars/FAST_LIO), a state-of-the-art Lidar-Inertial Odometry (LIO) system. The simulation environment in Gazebo includes a ground vehicle equipped with a LiDAR, IMU, and a stereo camera pair.
