@@ -10,7 +10,7 @@ You can control the vehicle using a joystick, while FastLIO simultaneously proce
 
 You can watch the [full video](https://youtu.be/AwSmk49Mt2I)
 
-# Building the Docker Images 
+# Building the Docker Image
 
 First, build the docker file. This will dowload and install all the necessary libraries and tools to a docker image including Gazebo simulator and Fast LIO.
 ```bash
