@@ -1,11 +1,11 @@
 # What is This Repository?
 
-This repository provides a Dockerfile that installs Gazebo and a modified version of FastLIO, a state-of-the-art Lidar-Inertial Odometry (LIO) system. The simulation environment in Gazebo includes a ground vehicle equipped with a LiDAR, IMU, and a stereo camera pair.
+This repository provides a Dockerfile that installs [Gazebo](https://gazebosim.org/home) and a slightly modified version of [FastLIO](https://github.com/hku-mars/FAST_LIO), a state-of-the-art Lidar-Inertial Odometry (LIO) system. The simulation environment in Gazebo includes a ground vehicle equipped with a LiDAR, IMU, and a stereo camera pair.
 
-You can control the vehicle using a joystick, while FastLIO simultaneously processes IMU and LiDAR measurements. Additionally, FastLIO visualizes the estimated trajectory and map in real-time.
+You can control the vehicle using a joystick, while FastLIO simultaneously processes IMU and LiDAR measurements and visualizes the estimated trajectory with map in real-time.
 
 <div align="center">
-  <img src="Visualization/GazLIO.gif" alt="Visualization of the Overall System" width="75%">
+  <img src="Visualization/GazLIO.gif" alt="Visualization of the Overall System" width="60%">
 </div>
 
 # Building the Docker Images 
