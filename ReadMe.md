@@ -1,6 +1,6 @@
 # What is This Repository?
 
-This repository provides a Dockerfile that installs [Gazebo](https://gazebosim.org/home) and a slightly modified version of [FastLIO](https://github.com/hku-mars/FAST_LIO), a state-of-the-art Lidar-Inertial Odometry (LIO) system. The simulation environment in Gazebo includes a ground vehicle equipped with a LiDAR, IMU, and a stereo camera pair.
+This repository provides a [Dockerfile](Dockerfile_GazLIO) that installs [Gazebo](https://gazebosim.org/home) and a slightly modified version of [FastLIO](https://github.com/hku-mars/FAST_LIO), a state-of-the-art Lidar-Inertial Odometry (LIO) system. The simulation environment in Gazebo includes a ground vehicle equipped with a LiDAR, IMU, and a stereo camera pair.
 
 You can control the vehicle using a joystick, while FastLIO simultaneously processes IMU and LiDAR measurements and visualizes the estimated trajectory with map in real-time.
 
@@ -12,7 +12,7 @@ You can control the vehicle using a joystick, while FastLIO simultaneously proce
 
 First, build the docker iamge. This will dowload and install necessary libraries and tools to docker image including Gazebo simulator and Fast LIO.
 ```bash
-docker build -t humble -f Dockerfile_humble .
+docker build -t GazLIO -f Dockerfile_GazLIO .
 ```
 
 # Running The System
@@ -31,7 +31,7 @@ If you are not familiar with **terminator**, it is highly recommended that you f
 First initialize the docker image
 ```bash
 cd ..
-bash humble.bash
+bash GazLIO_runner.bash
 ```
 
 Start the terminator
@@ -119,7 +119,7 @@ Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/fold
 1. First initialize the docker image
     ```bash
     cd ..
-    bash humble.bash
+    bash GazLIO_runner.bash
     ```
 
 2. Start the terminator
@@ -144,7 +144,7 @@ Dowload the simulation ros2 bags from [google drive](https://drive.google.com/dr
 1. First initialize the docker image
     ```bash
     cd ..
-    bash humble.bash
+    bash GazLIO_runner.bash
     ```
 
 2. Start the terminator
