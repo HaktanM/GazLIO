@@ -54,14 +54,14 @@ ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 - orchard
 
 ### Start Joystick Control
-Joystick control enable us to drive the vehicle from a joystick. In another terminal, run the following command to start the joystick driver:
+Joystick control enable us to drive the vehicle from a joystick. In another terminator terminal, run the following command to start the joystick driver:
 ```bash
 ros2 run joy joy_node
 ```
 
 Next, we need to convert the joystick outputs into a format that Gazebo expects. This is done using a dedicated package.
 
-Run the following commands:
+Finally, run the following commands:
 
 ```bash
 cd /root/joystick
