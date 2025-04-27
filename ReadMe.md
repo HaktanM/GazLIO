@@ -5,7 +5,7 @@ This repository provides a Dockerfile that installs [Gazebo](https://gazebosim.o
 You can control the vehicle using a joystick, while FastLIO simultaneously processes IMU and LiDAR measurements and visualizes the estimated trajectory with map in real-time.
 
 <div align="center">
-  <img src="Visualization/GazLIO.gif" alt="Visualization of the Overall System" width="60%">
+  <img src="Visualization/GazLIO.gif" alt="Visualization of the Overall System" width="80%">
 </div>
 
 # Building the Docker Images 
