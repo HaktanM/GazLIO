@@ -47,7 +47,7 @@ To launch the simulator, copy and paste the following script into one of the ter
 ```bash
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 ```
-**Note:** Currently, the other worlds are not supported. Only the warehouse is available. 
+**Note:** Currently, the other worlds are **not supported**. Only the warehouse is available. 
 - warehouse
 - office
 - pipeline
@@ -126,14 +126,9 @@ Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/fold
 
 1. First initialize the docker image
     ```bash
-    cd ..
     bash GazLIO_runner.bash
     ```
-
-2. Start the terminator
-    ```bash
-    terminator
-    ```
+2. Split the terminator terminal into 2 (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>).
 
 3. In one terminator window, start FastLIO
     ```
@@ -152,14 +147,10 @@ Dowload the simulation ros2 bags from [google drive](https://drive.google.com/dr
 
 1. First initialize the docker image
     ```bash
-    cd ..
     bash GazLIO_runner.bash
     ```
 
-2. Start the terminator
-    ```bash
-    terminator
-    ```
+2. Split the terminator terminal into 2 (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>).
 
 3. In one terminator window, start FastLIO
     ```bash
