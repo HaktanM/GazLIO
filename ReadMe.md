@@ -76,7 +76,10 @@ The button mapping shown below is adapted from the [joy2twist Github page](https
   <img src="https://raw.githubusercontent.com/husarion/joy2twist/ros2/.docs/gamepad-legend-panther.png" alt="JoyStick Controller" width="75%">
 </div>
 
-
+**Warning:** If the vehicle does not respond to joystick inputs, try closing and reopening the simulator. To further troubleshoot motion control, check the `/w200_0000/cmd_vel` topic to verify whether the joystick is publishing velocity commands.
+```bash
+ros2 topic echo /w200_0000/cmd_vel
+```
 
 
 ### Start Fast LIO
