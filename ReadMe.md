@@ -12,7 +12,7 @@ You can watch the [full video](https://youtu.be/AwSmk49Mt2I)
 
 # Building the Docker Images 
 
-First, build the docker image. This will dowload and install necessary libraries and tools to docker image including Gazebo simulator and Fast LIO.
+First, build the docker file. This will dowload and install all the necessary libraries and tools to a docker image including Gazebo simulator and Fast LIO.
 ```bash
 cd GazLIO
 docker build -t gaz_lio -f Dockerfile_GazLIO .
