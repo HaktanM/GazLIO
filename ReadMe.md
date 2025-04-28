@@ -67,7 +67,7 @@ To launch the simulator, copy and paste the following script into one of the ter
 ```bash
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 ```
-**Note:** Currently, the other worlds are **not supported**. Only the warehouse is available. 
+**Note:** Currently, you can try other worlds as well.
 - warehouse
 - office
 - pipeline
@@ -96,9 +96,9 @@ The button mapping shown below is adapted from the [joy2twist Github page](https
   <img src="https://raw.githubusercontent.com/husarion/joy2twist/ros2/.docs/gamepad-legend-panther.png" alt="JoyStick Controller" width="75%">
 </div>
 
-**Warning:** If the vehicle does not respond to joystick inputs, try closing and reopening the simulator. To further troubleshoot motion control, check the `/w200_0000/cmd_vel` topic to verify whether the joystick is publishing velocity commands.
+**Warning:** If the vehicle does not respond to joystick inputs, try closing and reopening the simulator. To further troubleshoot motion control, check the `/ground_vehicle/platform/cmd_vel` topic to verify whether the joystick is publishing velocity commands.
 ```bash
-ros2 topic echo /w200_0000/cmd_vel
+ros2 topic echo /ground_vehicle/platform/cmd_vel
 ```
 
 
@@ -145,7 +145,7 @@ To adjust the simulation time flow, follow these steps:
     <world name='warehouse'>
         <physics type="ode">
         <max_step_size>0.003</max_step_size>
-        <real_time_factor>1.01</real_time_factor>
+        <real_time_factor>0.2</real_time_factor>
     ```
 3. Save and close. Then, restart the simulator to apply the changes.
 
@@ -158,7 +158,7 @@ Dowload the HKU ros2 bag from [google drive](https://drive.google.com/drive/fold
 
 1. First initialize the docker image
     ```bash
-    bash GazLIO_runner.bash
+    bash run_GazLIO.bash
     ```
 2. Split the terminator terminal into 2 (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>).
 
@@ -179,7 +179,7 @@ Dowload the simulation ros2 bags from [google drive](https://drive.google.com/dr
 
 1. First initialize the docker image
     ```bash
-    bash GazLIO_runner.bash
+    bash run_GazLIO.bash
     ```
 
 2. Split the terminator terminal into 2 (<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>).
