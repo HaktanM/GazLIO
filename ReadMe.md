@@ -21,9 +21,10 @@ docker build -t gaz_lio -f Dockerfile_GazLIO .
 # Running The System
 
 The overall system is composed of 3 subsystems
-- Simulator: Gazebo
+- Simulator: Clearpath
 - Controller: Joystick
-- State Estimator: Fast LIO
+- State Estimator: FastLIO
+
 
 ### Terminator
 Each subsytem should be able to communicate with each other. **Terminator** is a useful terminal which enables us to connect each subsytem through ROS.
@@ -42,6 +43,25 @@ This will automatically start the **terminator**.
     ```
     sed -i 's|<real_time_factor>[^<]*</real_time_factor>|<real_time_factor>0.2</real_time_factor>|' /opt/ros/humble/share/clearpath_gz/worlds/warehouse.sdf
     ```
+
+### All Steps at a Glance
+Follow these steps to run the full system. For detailed instructions, refer to the upcoming sections.
+```bash
+# In one of the terminator terminals, start the simulator
+ros2 launch clearpath_gz simulation.launch.py world:=warehouse
+
+# In one of the terminator terminals, joystick driver
+ros2 run joy joy_node
+
+# In one of the terminator terminals, joystick interpreter
+cd /root/joystick
+source install/setup.bash
+ros2 run joy2twist joy2twist
+
+# Once the simulator is ready, start FastLIO in one of the terminator terminals.
+ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
+```
+
 ### Start Simulator
 To launch the simulator, copy and paste the following script into one of the terminator terminals:
 ```bash
