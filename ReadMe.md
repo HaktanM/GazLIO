@@ -110,16 +110,20 @@ ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
 
 # Data Collection for Offline Examiantion
 You can collect data for offline examination. For example, you may wish to record the following data streams for later analysis:
-- groundtruth pose information
 - IMU data
 - Lidar Data
 - Left and right camera frames
 
 To start recording the data, use the following command:
 ```bash
-ros2 bag record /w200_0000/tf /w200_0000/sensors/imu_1/data /w200_0000/sensors/lidar3d_0/points /w200_0000/sensors/camera_0/color/image /w200_0000/sensors/camera_1/color/image -o _warehouse
+ros2 bag record /ground_vehicle/sensors/imu_1/data /ground_vehicle/sensors/lidar3d_0/points /ground_vehicle/sensors/camera_0/color/image /ground_vehicle/sensors/camera_1/color/image -o _warehouse
 ```
 This will create a ros2 bag file. 
+
+Unfortunately, the groundtruth pose is not published through ROS. However, it is published through gazebo. You can save the groundtruth pose using gazebo.
+```bash
+gz topic -e -t /model/ground_vehicle/robot/pose > groundtruth.txt
+```
 
 ### Decreasing Simulation Real Time Factor for Efficient Data Collection
 If you plan to collect large amounts of data, it is recommended to decrease the simulation time rate. Without adjusting the time rate, data will continue to accumulate at a fast rate, potentially causing issues with saving or processing the data effectively.
