@@ -32,8 +32,8 @@ Each subsytem should be able to communicate with each other. **Terminator** is a
 ### Start the docker image
 First initialize the docker image
 ```bash
-cd ..
-bash GazLIO_runner.bash
+cd GazLIO
+bash run_GazLIO.bash
 ```
 
 This will automatically start the **terminator**.
