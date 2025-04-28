@@ -61,8 +61,8 @@ ros2 run joy2twist joy2twist
 # Once the simulator is ready, start FastLIO in one of the terminator terminals.
 ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
 ```
-
-### Start Simulator
+### Step by Step Explanations
+#### Start Simulator
 To launch the simulator, copy and paste the following script into one of the terminator terminals:
 ```bash
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
@@ -73,7 +73,7 @@ ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 - pipeline
 - orchard
 
-### Start Joystick Control
+#### Start Joystick Control
 Joystick control enable us to drive the vehicle from a joystick. In another terminator terminal, run the following command to start the joystick driver:
 ```bash
 ros2 run joy joy_node
@@ -102,7 +102,7 @@ ros2 topic echo /w200_0000/cmd_vel
 ```
 
 
-### Start Fast LIO
+#### Start Fast LIO
 Before starting the FastLIO, wait untill the simulator is ready. Once the simulator is ready, use the following command:
 ```bash
 ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
