@@ -56,7 +56,7 @@ ros2 run joy joy_node
 # In one of the terminator terminals, start the joystick interpreter
 cd /root/joystick
 source install/setup.bash
-ros2 run joy2twist joy2twist
+ros2 run joy2twist joy2twist --ros-args --remap /cmd_vel:=/ground_vehicle/cmd_vel
 
 # Once the simulator is ready, start FastLIO in one of the terminator terminals.
 ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
@@ -86,7 +86,7 @@ Finally, run the following commands:
 ```bash
 cd /root/joystick
 source install/setup.bash
-ros2 run joy2twist joy2twist
+ros2 run joy2twist joy2twist --ros-args --remap /cmd_vel:=/ground_vehicle/cmd_vel
 ```
 
 Once this is done, you can use the joystick to drive the vehicle in the simulator.
