@@ -50,10 +50,10 @@ Follow these steps to run the full system. For detailed instructions, refer to t
 # In one of the terminator terminals, start the simulator
 ros2 launch clearpath_gz simulation.launch.py world:=warehouse
 
-# In one of the terminator terminals, joystick driver
+# In one of the terminator terminals, start the joystick driver
 ros2 run joy joy_node
 
-# In one of the terminator terminals, joystick interpreter
+# In one of the terminator terminals, start the joystick interpreter
 cd /root/joystick
 source install/setup.bash
 ros2 run joy2twist joy2twist
