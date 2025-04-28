@@ -1,5 +1,5 @@
 # Base image
-FROM osrf/ros:humble-desktop-full
+FROM osrf/ros:jazzy-desktop-full
 
 # Set environment variables to avoid some interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
@@ -16,64 +16,78 @@ RUN apt-get clean && \
     python3-pip \
     git \
     cmake \
-    curl lsb-release gnupg \
+    python3-vcstool \
     && rm -rf /var/lib/apt/lists/*
-
-
-RUN apt-get update && \
-    apt-get upgrade -y \
-    && rm -rf /var/lib/apt/lists/*
-
-
-
-# =======================================================================
-#                  Installation of Clearpath Simulator
-# =======================================================================
-
-# Install Gazebo Fortress
-RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
-    apt-get update && \
-    apt-get install -y ignition-fortress && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Clearpath
-RUN apt-get update && \
-    apt-get install -y ros-humble-clearpath-desktop \
-    && rm -rf /var/lib/apt/lists/*
-
-# Installing Clearpath Simulator
-WORKDIR /root/clearpath_ws
-RUN mkdir -p src && \
-    wget https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/humble/dependencies.repos && \
-    vcs import src < dependencies.repos && \
-    /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
-WORKDIR /
-
-
-# Install Clearpath Simulator
-RUN apt-get clean && apt-get update && apt-get install -y ros-humble-clearpath-simulator && \
-    rm -rf /var/lib/apt/lists/*
-
-# Also Install Various Worlds
-WORKDIR /opt/ros/humble/share/clearpath_gz/worlds/
-RUN curl -o orchard.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/orchard.sdf && \
-    curl -o office.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/office.sdf && \
-    curl -o pipeline.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/pipeline.sdf && \
-    curl -o construction.sdf https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/clearpath_gz/worlds/construction.sdf 
-WORKDIR /
-
-
-
-##### For teleoperation (robot controller), we need additional libraries
-RUN apt-get clean && apt-get update && apt-get install -y ros-humble-teleop-twist-keyboard && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir ~/clearpath/
 
 # Install tmux and terminator
 RUN apt-get update && apt-get install -y  tmux terminator && apt-get clean
 
+# Upgrade just in case
+RUN apt-get update && \
+    apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# =======================================================================
+#                  Installation of Gazebo Harmonic
+# =======================================================================
+# We need to dowload from https rather than http (God knows why !!!)
+RUN sed -i 's/http:/https:/g' /etc/apt/sources.list.d/ubuntu.sources
+
+# check https://gazebosim.org/docs/harmonic/install_ubuntu/ for details
+RUN apt-get update && \
+    apt-get install -y \
+    curl lsb-release gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Use HTTPS for all apt repositories
+RUN apt-get update  && apt-get update \
+    && apt-get install -y libcap-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+##### Installing Gazebo Harmonic
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y gz-harmonic && \
+    rm -rf /var/lib/apt/lists/*
+
+# Once the installation is completed, reverse the operation
+RUN sed -i 's/https:/http:/g' /etc/apt/sources.list.d/ubuntu.sources
+
+# =======================================================================
+#                  Installation of Clearpath Simulator
+# =======================================================================
+# Install the Clearpath Desktop metapackage
+RUN apt-get clean && apt-get update && apt-get install -y ros-jazzy-clearpath-desktop \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# python3-apt is required for cleanpath
+RUN apt-get update && \
+    apt install python3-apt -y \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Install Clearpath Simulator
+RUN apt-get clean && apt-get update && apt-get install -y ros-jazzy-clearpath-simulator && \
+    rm -rf /var/lib/apt/lists/*
+    
+WORKDIR /root/clearpath_ws/src 
+WORKDIR /root/clearpath_ws
+RUN bash -c " \
+    apt update && \
+    source /opt/ros/jazzy/setup.bash && \
+    wget https://raw.githubusercontent.com/clearpathrobotics/clearpath_simulator/jazzy/dependencies.repos && \
+    vcs import src < dependencies.repos && \
+    rosdep install -r --from-paths src -i -y && \
+    colcon build --symlink-install"
+WORKDIR /
+
+# We need this folder
+RUN mkdir /root/clearpath/
+WORKDIR /
+RUN git clone https://github.com/HaktanM/ClearpathRobotYaml.git && \
+    cp ClearpathRobotYaml/robot_a300.yaml /root/clearpath/robot.yaml
 
 # =======================================================================
 #                     Installation of joy2twist
@@ -82,26 +96,20 @@ RUN apt-get update && apt-get install -y  tmux terminator && apt-get clean
 WORKDIR /root/joystick/src
 RUN git clone https://github.com/HaktanM/joy2twist.git
 WORKDIR /root/joystick
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build --symlink-install"
 WORKDIR /
 
 ##### In case you want to control with keyboard, this is required
-RUN apt-get clean && apt-get update && apt-get install -y ros-humble-teleop-twist-keyboard && \
+RUN apt-get clean && apt-get update && apt-get install -y ros-jazzy-teleop-twist-keyboard && \
     rm -rf /var/lib/apt/lists/*
 
 
 # =======================================================================
 #          Installation of FAST LIO and its Dependancies
 # =======================================================================
-
 # Install PCL and Eigen
 RUN apt-get update && \
     apt install -y libpcl-dev libeigen3-dev
-
-# Upgrade just in case
-RUN apt-get update && \
-    apt-get upgrade -y \
-    && rm -rf /var/lib/apt/lists/*
 
 ARG A_DUMMY_VARIABLE=default_value
 # We need a slightly modified version of FastLIO
@@ -110,5 +118,10 @@ RUN git clone  https://github.com/HaktanM/fast_lio.git
 WORKDIR /root/fast_lio/src/fast_lio
 RUN git submodule update --init
 WORKDIR /root/fast_lio
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
+RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash && colcon build --symlink-install"
 WORKDIR /
+
+# Upgrade just in case
+RUN apt-get update && \
+    apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*

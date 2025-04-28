@@ -120,9 +120,14 @@ ros2 bag record /ground_vehicle/sensors/imu_1/data /ground_vehicle/sensors/lidar
 ```
 This will create a ros2 bag file. 
 
-Unfortunately, the groundtruth pose is not published through ROS. However, it is published through gazebo. You can save the groundtruth pose using gazebo.
+Unfortunately, the ground truth pose is not available through ROS topics, but it is published by Gazebo. You can record the ground truth pose directly from Gazebo.
 ```bash
 gz topic -e -t /model/ground_vehicle/robot/pose > groundtruth.txt
+```
+
+In order to see other gazebo topics, use this commend:
+```bash
+gz topic -l
 ```
 
 ### Decreasing Simulation Real Time Factor for Efficient Data Collection
