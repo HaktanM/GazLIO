@@ -116,7 +116,7 @@ You can collect data for offline examination. For example, you may wish to recor
 
 To start recording the data, use the following command:
 ```bash
-ros2 bag record /ground_vehicle/sensors/imu_1/data /ground_vehicle/sensors/lidar3d_0/points /ground_vehicle/sensors/camera_0/color/image /ground_vehicle/sensors/camera_1/color/image -o _warehouse
+ros2 bag record /ground_vehicle/sensors/imu_0/data /ground_vehicle/sensors/lidar3d_0/points /ground_vehicle/sensors/camera_0/color/image /ground_vehicle/sensors/camera_1/color/image -o _warehouse
 ```
 This will create a ros2 bag file. 
 
