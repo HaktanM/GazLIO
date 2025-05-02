@@ -41,7 +41,7 @@ This will automatically start the **terminator**.
 - **Left-click on the Terminator window**. Then press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>O</kbd> to split the terminal horizontally or vertically. Each split terminal can be used to interact with ROS. **Create as many terminal panels as needed.**
 - You can change the real time factor of the simulation from `GazLIO_runner.bash`
     ```
-    sed -i 's|<real_time_factor>[^<]*</real_time_factor>|<real_time_factor>0.2</real_time_factor>|' /opt/ros/humble/share/clearpath_gz/worlds/warehouse.sdf
+    sed -i 's|<real_time_factor>[^<]*</real_time_factor>|<real_time_factor>0.2</real_time_factor>|' /opt/ros/jazzy/share/clearpath_gz/worlds/warehouse.sdf
     ```
 
 ### All Steps at a Glance
@@ -136,7 +136,7 @@ If you plan to collect large amounts of data, it is recommended to decrease the 
 To adjust the simulation time flow, follow these steps:
 1.  Navigate to the world SDF file:
     ```bash
-    cd /opt/ros/humble/share/clearpath_gz/worlds/
+    cd /opt/ros/jazzy/share/clearpath_gz/worlds/
     nano warehouse.sdf
     ```
 2. Modify the **real_time_factor**
