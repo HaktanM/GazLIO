@@ -62,6 +62,26 @@ ros2 run joy2twist joy2twist --ros-args --remap /cmd_vel:=/ground_vehicle/platfo
 ros2 launch fast_lio mapping.launch.py config_file:=gazebo.yaml
 ```
 ### Step by Step Explanations
+
+#### Set Simulation Real Time Factor for Efficient Data Collection
+It is recommended to decrease the simulation time rate. Without adjusting the time rate, data will continue to accumulate at a fast rate, potentially causing issues with saving or processing the data effectively.
+
+To adjust the simulation time flow, follow these steps:
+1.  Navigate to the world SDF file:
+    ```bash
+    cd /opt/ros/jazzy/share/clearpath_gz/worlds/
+    nano warehouse.sdf
+    ```
+2. Modify the **real_time_factor**
+    ```xml
+    <sdf version='1.7'>
+    <world name='warehouse'>
+        <physics type="ode">
+        <max_step_size>0.003</max_step_size>
+        <real_time_factor>0.2</real_time_factor>
+    ```
+3. Save and close. Then, restart the simulator to apply the changes.
+
 #### Start Simulator
 To launch the simulator, copy and paste the following script into one of the terminator terminals:
 ```bash
@@ -129,25 +149,6 @@ In order to see other gazebo topics, use this commend:
 ```bash
 gz topic -l
 ```
-
-### Decreasing Simulation Real Time Factor for Efficient Data Collection
-If you plan to collect large amounts of data, it is recommended to decrease the simulation time rate. Without adjusting the time rate, data will continue to accumulate at a fast rate, potentially causing issues with saving or processing the data effectively.
-
-To adjust the simulation time flow, follow these steps:
-1.  Navigate to the world SDF file:
-    ```bash
-    cd /opt/ros/jazzy/share/clearpath_gz/worlds/
-    nano warehouse.sdf
-    ```
-2. Modify the **real_time_factor**
-    ```xml
-    <sdf version='1.7'>
-    <world name='warehouse'>
-        <physics type="ode">
-        <max_step_size>0.003</max_step_size>
-        <real_time_factor>0.2</real_time_factor>
-    ```
-3. Save and close. Then, restart the simulator to apply the changes.
 
 
 # Additional Notes
