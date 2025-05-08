@@ -145,6 +145,8 @@ Unfortunately, the ground truth pose is not available through ROS topics, but it
 gz topic -e -t /model/ground_vehicle/robot/pose > groundtruth.txt
 ```
 
+This creates a file with groundtruth. You may want to convert the grountruth into a TUM format for evaluation. You can use [PrepareGT.py](https://github.com/HaktanM/GazLIO/blob/main/PrepareGT.py) to convert the groundtruth format. 
+
 In order to see other gazebo topics, use this commend:
 ```bash
 gz topic -l
